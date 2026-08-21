@@ -453,16 +453,23 @@
 
 <!-- Result Overlay -->
 <div class="result-overlay" id="resultOverlay">
-  <div class="result-card-face" id="resultCardFace">
-    <div class="result-symbol" id="resultSymbol">✦</div>
-    <div class="result-card-name" id="resultCardName"></div>
-    <div class="result-card-roman" id="resultCardRoman"></div>
+  <div style="width:100%;max-width:480px;padding:1.5rem;overflow-y:auto;max-height:100vh;">
+    <div class="result-card-face" style="margin:0 auto 1.2rem;">
+      <div class="result-symbol" id="resultSymbol">✦</div>
+      <div class="result-card-name" id="resultCardName"></div>
+      <div class="result-card-roman" id="resultCardRoman"></div>
+    </div>
+    <div id="scriptContent" style="text-align:left;color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;"></div>
+    <div id="focusContent" style="background:rgba(201,168,76,0.08);border-left:2px solid #c9a84c;padding:0.8rem 1rem;border-radius:0 8px 8px 0;margin-bottom:1rem;color:rgba(255,255,255,0.8);font-size:0.9rem;line-height:1.7;"></div>
+    <div id="questionContent" style="font-style:italic;color:#c9a84c;font-size:0.9rem;line-height:1.6;margin-bottom:1.2rem;text-align:center;"></div>
+    <div style="text-align:center;margin-bottom:1.2rem;color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.6;">
+      🌿 อาจมีบางสิ่งที่ช่วยสนับสนุนคุณในช่วงเวลานี้ได้อย่างเป็นธรรมชาติ<br>ลองแวะดู Aura Picks ที่เราคัดไว้ แล้วชวนตัวเองคิดต่ออีกนิดผ่านคำถามทบทวนสั้น ๆ อีก 3 ข้อค่ะ
+    </div>
+    <button class="result-btn" onclick="goToMessenger()">กลับ Messenger →</button>
   </div>
-  <div class="result-title">ไพ่ของคุณได้รับแล้วค่ะ ✨</div>
-  <div class="result-msg">กลับไปที่ Messenger เพื่อรับการสะท้อนพลังงานจาก Aura Studio ค่ะ</div>
-  <button class="result-btn" onclick="goToMessenger()">กลับ Messenger →</button>
 </div>
 
+<script src="scripts.js"></script>
 <script>
 const cards = [
   { num: "0", name: "The Fool", symbol: "🌟", roman: "0" },
@@ -560,20 +567,43 @@ function selectCard(el, card) {
   setTimeout(() => revealCard(), 400);
 }
 
+
+
+// Get emotion from URL param
+function getEmotion() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('emotion') || 'สับสน';
+}
+
 function revealCard() {
   if (!selectedCard) return;
+
+  const emotion = getEmotion();
+  const cardNum = selectedCard.num;
+  const cardScripts = scripts[cardNum];
 
   document.getElementById('resultSymbol').textContent = selectedCard.symbol;
   document.getElementById('resultCardName').textContent = selectedCard.name;
   document.getElementById('resultCardRoman').textContent = selectedCard.roman;
+
+  if (cardScripts && cardScripts[emotion]) {
+    const s = cardScripts[emotion];
+    document.getElementById('scriptContent').textContent = s.main;
+    document.getElementById('focusContent').innerHTML = '✨ <strong>สิ่งที่ควรใส่ใจ</strong><br>' + s.focus;
+    document.getElementById('questionContent').innerHTML = '💭 <strong>คำถามสำหรับทบทวนตัวเอง</strong><br>' + s.question;
+  } else {
+    document.getElementById('scriptContent').textContent = 'กำลังเตรียมคำสะท้อนสำหรับไพ่ใบนี้ค่ะ ✨';
+    document.getElementById('focusContent').textContent = '';
+    document.getElementById('questionContent').textContent = '';
+  }
+
   document.getElementById('resultOverlay').classList.add('show');
 }
 
 function goToMessenger() {
-  // Send card number back via Messenger ref URL
   const cardNum = selectedCard ? selectedCard.num : '0';
-  // Replace YOUR_PAGE_ID with actual Facebook Page ID
-  const messengerUrl = `https://m.me/1169294569595370?ref=card_${cardNum}`;
+  const emotion = getEmotion();
+  const messengerUrl = `https://m.me/1116929456959537 0?ref=card_${cardNum}_emotion_${emotion}`;
   window.location.href = messengerUrl;
 }
 </script>

@@ -575,29 +575,6 @@ function getEmotion() {
   return params.get('emotion') || 'สับสน';
 }
 
-// Get topic from URL param
-function getTopic() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('topic') || 'การงาน';
-}
-
-// Thai -> ASCII slug maps, used to build the ref key for the Affiliate automations
-const TOPIC_SLUGS = {
-  'การงาน': 'work',
-  'การเงิน': 'money',
-  'การเรียน': 'study',
-  'ความรัก': 'love',
-  'ครอบครัว': 'family',
-  'สุขภาพ': 'health',
-};
-const EMOTION_SLUGS = {
-  'เหนื่อย': 'tired',
-  'กดดัน': 'pressured',
-  'กังวล': 'anxious',
-  'สับสน': 'confused',
-  'อยากเริ่มใหม่': 'restart',
-};
-
 function revealCard() {
   if (!selectedCard) return;
 
@@ -624,14 +601,10 @@ function revealCard() {
 }
 
 function goToMessenger() {
-  const cardNum = selectedCard ? selectedCard.num : '0';
-  const emotion = getEmotion();
-  const topic = getTopic();
-  const topicSlug = TOPIC_SLUGS[topic] || 'work';
-  const emotionSlug = EMOTION_SLUGS[emotion] || 'confused';
-  // Fixed key that must exactly match one of the 30 ManyChat "Custom Ref Parameter" values
-  const refKey = `aff_${topicSlug}_${emotionSlug}`;
-  const messengerUrl = `https://m.me/1169294569595370?ref=${refKey}`;
+  // ManyChat already knows {{topic}} and {{emotion}} from earlier in the flow —
+  // the Affiliate Flow's Condition Blocks read those custom fields directly,
+  // so the ref here just needs to match the single Starting Step trigger.
+  const messengerUrl = `https://m.me/1169294569595370?ref=affiliate`;
   window.location.href = messengerUrl;
 }
 </script>

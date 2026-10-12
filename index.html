@@ -439,6 +439,7 @@
 
   <div class="instruction">
     <h2>หายใจลึกๆ แล้วเลือกไพ่ที่ดึงดูดใจคุณ</h2>
+    <p>ไพ่ทาโรต์ชุดหลัก 22 ใบ สลับใหม่ทุกครั้ง</p>
     <p>ปล่อยใจเป็นอิสระ ไม่ต้องคิดมาก ✨</p>
   </div>
 
@@ -459,6 +460,7 @@
       <div class="result-card-name" id="resultCardName"></div>
       <div class="result-card-roman" id="resultCardRoman"></div>
     </div>
+    <div style="text-align:center;margin:0 auto 1.2rem;max-width:340px;color:rgba(255,255,255,0.5);font-size:0.8rem;line-height:1.6;">🌙 อ่านได้ตามสบายนะคะ ถ้าผ่านไป 5 นาทีแล้วคุณยังไม่กลับเข้าแชต Aura จะส่งข้อความไปถามเบา ๆ ว่าอ่านจบหรือยังค่ะ</div>
     <div id="scriptContent" style="text-align:left;color:rgba(255,255,255,0.88);font-size:0.95rem;line-height:1.8;margin-bottom:1.2rem;white-space:pre-wrap;"></div>
     <div id="focusContent" style="background:rgba(201,168,76,0.08);border-left:2px solid #c9a84c;padding:0.8rem 1rem;border-radius:0 8px 8px 0;margin-bottom:1rem;color:rgba(255,255,255,0.8);font-size:0.9rem;line-height:1.7;"></div>
     <div id="questionContent" style="font-style:italic;color:#c9a84c;font-size:0.9rem;line-height:1.6;margin-bottom:1.2rem;text-align:center;"></div>
@@ -546,11 +548,10 @@ shuffled.forEach((card, idx) => {
         <line x1="3" y1="48" x2="57" y2="48" stroke="#c9a84c" stroke-width="0.3" opacity="0.2"/>
         <line x1="30" y1="3" x2="30" y2="93" stroke="#c9a84c" stroke-width="0.3" opacity="0.2"/>
         <circle cx="30" cy="48" r="12" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
-        <polygon points="30,36 33,44 42,44 35,50 38,58 30,52 22,58 25,50 18,44 27,44" fill="#c9a84c" opacity="0.25"/>
+        <path d="M30 38 C30.8 45 33 47.2 40 48 C33 48.8 30.8 51 30 58 C29.2 51 27 48.8 20 48 C27 47.2 29.2 45 30 38 Z" fill="#c9a84c" opacity="0.25"/>
       </svg>
     </div>
     <div class="card-symbol">✦</div>
-    <div class="card-num">${String(idx + 1).padStart(2, '0')}</div>
   `;
 
   el.onclick = () => selectCard(el, card);

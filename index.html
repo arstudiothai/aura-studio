@@ -466,6 +466,8 @@
       🌿 อาจมีบางสิ่งที่ช่วยสนับสนุนคุณในช่วงเวลานี้ได้อย่างเป็นธรรมชาติ<br>ลองแวะดู Aura Picks ที่เราคัดไว้ แล้วชวนตัวเองคิดต่ออีกนิดผ่านคำถามทบทวนสั้น ๆ อีก 3 ข้อค่ะ
     </div>
     <button class="result-btn" onclick="goToMessenger()">กลับ Messenger →</button>
+    <div style="text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.45);font-size:0.78rem;line-height:1.6;">ถ้ากดแล้วไม่กลับเข้าแชต ให้กด ✕ หรือ "เสร็จ" ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
+    <div id="repickWrap" style="text-align:center;margin-top:0.8rem;display:none;"><a href="#" onclick="repick();return false;" style="color:rgba(201,168,76,0.7);font-size:0.8rem;">เลือกไพ่ใบใหม่</a></div>
   </div>
 </div>
 
@@ -482,7 +484,7 @@ const cards = [
   { num: "7", name: "The Chariot", symbol: "🏆", roman: "VII" },
   { num: "8", name: "Strength", symbol: "🦁", roman: "VIII" },
   { num: "9", name: "The Hermit", symbol: "🕯️", roman: "IX" },
-  { num: "10", name: "Wheel of Fortune", symbol: "☯️", roman: "X" },
+  { num: "10", name: "Wheel of Fortune", symbol: "🎡", roman: "X" },
   { num: "11", name: "Justice", symbol: "⚖️", roman: "XI" },
   { num: "12", name: "The Hanged Man", symbol: "🔄", roman: "XII" },
   { num: "13", name: "Death", symbol: "🦋", roman: "XIII" },
@@ -598,13 +600,45 @@ function revealCard() {
   }
 
   document.getElementById('resultOverlay').classList.add('show');
+  rememberCard(selectedCard.num, emotion);
 }
+
+// ---- จำไพ่ที่เลือก (12-10-2026) ----
+const SAVE_KEY = 'aura_last_card';
+function rememberCard(num, emotion) {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ num, emotion, t: Date.now() })); } catch (e) {}
+}
+function savedCard(emotion) {
+  try {
+    const v = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if (v && v.emotion === emotion && Date.now() - v.t < 24 * 60 * 60 * 1000) return v.num;
+  } catch (e) {}
+  return null;
+}
+function repick() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
+  const p = new URLSearchParams(window.location.search);
+  p.delete('card');
+  window.location.search = p.toString();
+}
+// เปิดไพ่ใบเดิมอัตโนมัติ: ?card=N (ลิงก์จากแชต) หรือไพ่ที่เคยเลือกใน 24 ชม.
+(function autoOpen() {
+  const p = new URLSearchParams(window.location.search);
+  const num = p.get('card') || savedCard(getEmotion());
+  const card = cards.find(c => c.num === String(num));
+  if (!card) return;
+  selectedCard = card;
+  revealCard();
+  document.getElementById('repickWrap').style.display = 'block';
+})();
 
 function goToMessenger() {
   // ManyChat already knows {{topic}} and {{emotion}} from earlier in the flow —
   // the Affiliate Flow's Condition Blocks read those custom fields directly,
   // so the ref here just needs to match the single Starting Step trigger.
-  const messengerUrl = `https://m.me/1169294569595370?ref=affiliate`;
+  // ส่งเลขไพ่ไปด้วย (ref=affiliate--N) ให้ ManyChat บันทึกลง field card_num
+  const num = selectedCard ? selectedCard.num : '';
+  const messengerUrl = `https://m.me/1169294569595370?ref=affiliate--${num}`;
   window.location.href = messengerUrl;
 }
 </script>

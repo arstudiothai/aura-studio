@@ -439,6 +439,7 @@
 
   <div class="instruction">
     <h2>หายใจลึกๆ แล้วเลือกไพ่ที่ดึงดูดใจคุณ</h2>
+    <p>ไพ่ทาโรต์ชุดหลัก 22 ใบ สลับใหม่ทุกครั้ง</p>
     <p>ปล่อยใจเป็นอิสระ ไม่ต้องคิดมาก ✨</p>
   </div>
 
@@ -546,11 +547,10 @@ shuffled.forEach((card, idx) => {
         <line x1="3" y1="48" x2="57" y2="48" stroke="#c9a84c" stroke-width="0.3" opacity="0.2"/>
         <line x1="30" y1="3" x2="30" y2="93" stroke="#c9a84c" stroke-width="0.3" opacity="0.2"/>
         <circle cx="30" cy="48" r="12" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
-        <polygon points="30,36 33,44 42,44 35,50 38,58 30,52 22,58 25,50 18,44 27,44" fill="#c9a84c" opacity="0.25"/>
+        <path d="M30 38 C30.8 45 33 47.2 40 48 C33 48.8 30.8 51 30 58 C29.2 51 27 48.8 20 48 C27 47.2 29.2 45 30 38 Z" fill="#c9a84c" opacity="0.25"/>
       </svg>
     </div>
     <div class="card-symbol">✦</div>
-    <div class="card-num">${String(idx + 1).padStart(2, '0')}</div>
   `;
 
   el.onclick = () => selectCard(el, card);

@@ -625,8 +625,12 @@ function repick() {
 // เปิดไพ่ใบเดิมอัตโนมัติ: ?card=N (ลิงก์จากแชต) หรือไพ่ที่เคยเลือกใน 24 ชม.
 (function autoOpen() {
   const p = new URLSearchParams(window.location.search);
-  const num = p.get('card') || savedCard(getEmotion());
-  const card = cards.find(c => c.num === String(num));
+  // รับเลขไพ่แบบยืดหยุ่น: "15", "affiliate--15", " 15 " ฯลฯ → ใช้ตัวเลขท้ายสุด
+  const raw = p.get('card') || '';
+  const m = raw.match(/(\d{1,2})\s*$/);
+  const fromLink = m ? String(parseInt(m[1], 10)) : null;
+  let card = fromLink ? cards.find(c => c.num === fromLink) : null;
+  if (!card) { const s = savedCard(getEmotion()); card = s ? cards.find(c => c.num === String(s)) : null; }
   if (!card) return;
   selectedCard = card;
   revealCard();

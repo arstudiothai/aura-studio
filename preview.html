@@ -468,7 +468,8 @@
     <div style="text-align:center;margin-bottom:1.2rem;color:rgba(255,255,255,0.6);font-size:0.88rem;line-height:1.6;">
       🌿 อาจมีบางสิ่งที่ช่วยสนับสนุนคุณในช่วงเวลานี้ได้อย่างเป็นธรรมชาติ<br>ลองแวะดู Aura Picks ที่เราคัดไว้ แล้วชวนตัวเองคิดต่ออีกนิดผ่านคำถามทบทวนสั้น ๆ อีก 3 ข้อค่ะ
     </div>
-    <button class="result-btn" onclick="goToMessenger()">กลับ Messenger →</button>
+    <button class="result-btn" id="backBtn" onclick="goToMessenger()">กลับ Messenger →</button>
+    <div id="desktopNote" style="display:none;text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;">ถ้าเปิดหน้านี้บนคอมพิวเตอร์ ปุ่มด้านบนจะเปิด Instagram บนเว็บ<br>แนะนำให้กลับไปที่แอป Instagram ในมือถือ ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
     <div style="text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.45);font-size:0.78rem;line-height:1.6;">ถ้ากดแล้วไม่กลับเข้าแชต ให้กด ✕ หรือ "เสร็จ" ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
     <div id="repickWrap" style="text-align:center;margin-top:0.8rem;display:none;"><a href="#" onclick="repick();return false;" style="color:rgba(201,168,76,0.7);font-size:0.8rem;">เลือกไพ่ใบใหม่</a></div>
   </div>
@@ -643,10 +644,24 @@ function goToMessenger() {
   // the Affiliate Flow's Condition Blocks read those custom fields directly,
   // so the ref here just needs to match the single Starting Step trigger.
   // ส่งเลขไพ่ไปด้วย (ref=affiliate--N) ให้ ManyChat บันทึกลง field card_num
+  // ch=ig (ลิงก์จาก Instagram) → กลับแชต IG ด้วย ref เดียวกัน; ไม่มี ch → Messenger เหมือนเดิม
   const num = selectedCard ? selectedCard.num : '';
-  const messengerUrl = `https://m.me/1169294569595370?ref=affiliate--${num}`;
-  window.location.href = messengerUrl;
+  const url = isIG()
+    ? `https://ig.me/m/aurastudiothailand?ref=affiliate--${num}`
+    : `https://m.me/1169294569595370?ref=affiliate--${num}`;
+  window.location.href = url;
 }
+
+// ---- ช่องทาง Instagram (24-10-2026) ----
+function isIG() {
+  return (new URLSearchParams(window.location.search).get('ch') || '').toLowerCase() === 'ig';
+}
+(function setupChannel() {
+  if (!isIG()) return;
+  document.getElementById('backBtn').textContent = 'กลับ Instagram →';
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (!mobile) document.getElementById('desktopNote').style.display = 'block';
+})();
 </script>
 </body>
 </html>

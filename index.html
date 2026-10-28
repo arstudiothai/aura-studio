@@ -662,13 +662,13 @@ function isIG() {
 (function setupChannel() {
   // ปุ่ม + คำแนะนำใต้ปุ่ม แยกตามช่องทาง (IG / Messenger) และอุปกรณ์ (มือถือ / คอม) — 28-10-2026
   const ig = isIG();
-  const app = ig ? 'Instagram' : 'Messenger';
   const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   document.getElementById('backBtn').textContent = 'ส่งไพ่ให้ Aura';
   document.getElementById('desktopNote').style.display = 'none';
+  // คำอธิบายเดียวกันทั้ง IG และ Messenger (Kik 28-10-2026: ให้สั้นและเหมือนกัน) · บรรทัด ✕ เฉพาะมือถือ
   document.getElementById('backNote').innerHTML = mobile
     ? '① กดปุ่ม "ส่งไพ่ให้ Aura" เพื่อบอก Aura ว่าคุณได้ไพ่อะไร<br>② ถ้าหน้าว่างหรือยังอยู่หน้านี้ กด ✕ มุมซ้ายบน'
-    : 'กดปุ่ม "ส่งไพ่ให้ Aura" แล้วอ่านข้อความจาก Aura ในแชต ' + app + ' ได้เลย<br>(บนคอมหรือในมือถือก็ได้ค่ะ)';
+    : 'กดปุ่ม "ส่งไพ่ให้ Aura" เพื่อบอก Aura ว่าคุณได้ไพ่อะไร';
   // IG: อ่านไพ่ใบเดิมซ้ำ (เปิดจากปุ่มในแชต) ไม่ต้องส่ง ig.me ซ้ำ
   // เพราะในเบราว์เซอร์ของ IG ลิงก์ ig.me รอบสองจะเปิดหน้าเว็บ IG แทนแชต (28-10-2026)
   if (ig && reReadFromChat) {

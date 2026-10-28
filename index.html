@@ -625,7 +625,7 @@ function repick() {
   p.delete('card');
   window.location.search = p.toString();
 }
-let autoOpened = false; // true = เปิดไพ่ใบเดิมให้อัตโนมัติ (อ่านซ้ำ)
+let reReadFromChat = false; // true = เปิดจากปุ่ม "อ่านไพ่อีกครั้ง" ในแชต (ลิงก์มี ?card=N) = ไพ่ส่งเข้าแชตไปแล้ว
 // เปิดไพ่ใบเดิมอัตโนมัติ: ?card=N (ลิงก์จากแชต) หรือไพ่ที่เคยเลือกใน 24 ชม.
 (function autoOpen() {
   const p = new URLSearchParams(window.location.search);
@@ -637,7 +637,7 @@ let autoOpened = false; // true = เปิดไพ่ใบเดิมให�
   if (!card) { const s = savedCard(getEmotion()); card = s ? cards.find(c => c.num === String(s)) : null; }
   if (!card) return;
   selectedCard = card;
-  autoOpened = true;
+  reReadFromChat = !!fromLink && card.num === fromLink;
   revealCard();
   document.getElementById('repickWrap').style.display = 'block';
 })();
@@ -662,9 +662,11 @@ function isIG() {
 (function setupChannel() {
   if (!isIG()) return;
   document.getElementById('backBtn').textContent = 'กลับ Instagram →';
+  // IG: หน้าเว็บในแอป IG ปิดตัวเองไม่ได้ → บอกให้กด ✕ หลังกดปุ่ม
+  document.getElementById('backNote').innerHTML = 'กดปุ่มแล้วถ้าหน้าว่าง ให้กด ✕ ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura รออยู่ในแชต Instagram แล้วค่ะ';
   // IG: อ่านไพ่ใบเดิมซ้ำ (เปิดจากปุ่มในแชต) ไม่ต้องส่ง ig.me ซ้ำ
   // เพราะในเบราว์เซอร์ของ IG ลิงก์ ig.me รอบสองจะเปิดหน้าเว็บ IG แทนแชต (28-10-2026)
-  if (autoOpened) {
+  if (reReadFromChat) {
     document.getElementById('backBtn').style.display = 'none';
     document.getElementById('backNote').style.display = 'none';
     document.getElementById('igDoneNote').style.display = 'block';

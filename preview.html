@@ -470,7 +470,7 @@
     </div>
     <button class="result-btn" id="backBtn" onclick="goToMessenger()">กลับ Messenger →</button>
     <div id="desktopNote" style="display:none;text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;">ถ้าเปิดหน้านี้บนคอมพิวเตอร์ ปุ่มด้านบนจะเปิด Instagram บนเว็บ<br>แนะนำให้กลับไปที่แอป Instagram ในมือถือ ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
-    <div id="backNote" style="text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.45);font-size:0.78rem;line-height:1.6;">ถ้ากดแล้วไม่กลับเข้าแชต ให้กด ✕ หรือ "เสร็จ" ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
+    <div id="backNote" style="text-align:center;margin-top:0.9rem;color:rgba(255,255,255,0.6);font-size:0.82rem;line-height:1.6;">ถ้ากดแล้วไม่กลับเข้าแชต ให้กด ✕ หรือ "เสร็จ" ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura จะรออยู่ในแชตค่ะ</div>
     <div id="igDoneNote" style="display:none;text-align:center;margin-top:0.2rem;color:rgba(255,255,255,0.8);font-size:0.9rem;line-height:1.7;">✅ ไพ่ใบนี้ส่งเข้าแชตไปแล้วค่ะ<br>กด ✕ ที่มุมบนของหน้าจอ เพื่อกลับไปแชต Instagram<br><a href="#" onclick="goToMessenger();return false;" style="color:rgba(255,255,255,0.4);font-size:0.75rem;">ยังไม่ได้รับข้อความในแชต? กดส่งไพ่อีกครั้ง</a></div>
     <div id="repickWrap" style="text-align:center;margin-top:0.8rem;display:none;"><a href="#" onclick="repick();return false;" style="color:rgba(201,168,76,0.7);font-size:0.8rem;">เลือกไพ่ใบใหม่</a></div>
   </div>
@@ -660,19 +660,22 @@ function isIG() {
   return (new URLSearchParams(window.location.search).get('ch') || '').toLowerCase() === 'ig';
 }
 (function setupChannel() {
-  if (!isIG()) return;
-  document.getElementById('backBtn').textContent = 'กลับ Instagram →';
-  // IG: หน้าเว็บในแอป IG ปิดตัวเองไม่ได้ → บอกให้กด ✕ หลังกดปุ่ม
-  document.getElementById('backNote').innerHTML = 'กดปุ่มแล้วถ้าหน้าว่าง ให้กด ✕ ที่มุมบนของหน้าจอ<br>ข้อความจาก Aura รออยู่ในแชต Instagram แล้วค่ะ';
+  // ปุ่ม + คำแนะนำใต้ปุ่ม แยกตามช่องทาง (IG / Messenger) และอุปกรณ์ (มือถือ / คอม) — 28-10-2026
+  const ig = isIG();
+  const app = ig ? 'Instagram' : 'Messenger';
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  document.getElementById('backBtn').textContent = 'ส่งไพ่ให้ Aura';
+  document.getElementById('desktopNote').style.display = 'none';
+  document.getElementById('backNote').innerHTML = mobile
+    ? '① กดปุ่ม "ส่งไพ่ให้ Aura" เพื่อบอก Aura ว่าคุณได้ไพ่อะไร<br>② ถ้าหน้าว่างหรือยังอยู่หน้านี้ กด ✕ มุมซ้ายบน'
+    : 'กดปุ่ม "ส่งไพ่ให้ Aura" แล้วอ่านข้อความจาก Aura ในแชต ' + app + ' ได้เลย<br>(บนคอมหรือในมือถือก็ได้ค่ะ)';
   // IG: อ่านไพ่ใบเดิมซ้ำ (เปิดจากปุ่มในแชต) ไม่ต้องส่ง ig.me ซ้ำ
   // เพราะในเบราว์เซอร์ของ IG ลิงก์ ig.me รอบสองจะเปิดหน้าเว็บ IG แทนแชต (28-10-2026)
-  if (reReadFromChat) {
+  if (ig && reReadFromChat) {
     document.getElementById('backBtn').style.display = 'none';
     document.getElementById('backNote').style.display = 'none';
     document.getElementById('igDoneNote').style.display = 'block';
   }
-  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  if (!mobile) document.getElementById('desktopNote').style.display = 'block';
 })();
 </script>
 </body>

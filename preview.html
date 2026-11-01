@@ -619,6 +619,13 @@ function savedCard(emotion) {
   } catch (e) {}
   return null;
 }
+function lastCardOnDevice() {
+  try {
+    const v = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+    if (v && v.num) return String(v.num);
+  } catch (e) {}
+  return null;
+}
 function repick() {
   try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
   const p = new URLSearchParams(window.location.search);
@@ -635,9 +642,17 @@ let reReadFromChat = false; // true = เปิดจากปุ่ม "อ่�
   const m = raw.match(/(\d{1,2})\s*$/);
   const fromLink = m ? String(parseInt(m[1], 10)) : null;
   let card = fromLink ? cards.find(c => c.num === fromLink) : null;
+  // 01-11-2026: ปุ่ม "อ่านไพ่อีกครั้ง" มี card= แต่ค่าว่าง (ManyChat ไม่ได้ใส่เลขไพ่) → ใช้ไพ่ใบล่าสุดที่เลือกบนเครื่องนี้แทน
+  // เฉพาะลิงก์ที่มี card= เท่านั้น — ลิงก์ "เปิดไพ่ของคุณ" (ไม่มี card=) ยังได้เลือกไพ่ใหม่ทุกครั้ง
+  let fromDevice = false;
+  if (!card && p.has('card')) {
+    const last = lastCardOnDevice();
+    card = last ? cards.find(c => c.num === last) : null;
+    fromDevice = !!card;
+  }
   if (!card) return;
   selectedCard = card;
-  reReadFromChat = !!fromLink && card.num === fromLink;
+  reReadFromChat = (!!fromLink && card.num === fromLink) || fromDevice;
   revealCard();
   document.getElementById('repickWrap').style.display = 'block';
 })();
